@@ -25,6 +25,7 @@
             id="email"
             name="email"
             placeholder="請輸入 email"
+            v-model="email"
             required
           />
           <label class="formControls_label" for="name">您的暱稱</label>
@@ -34,6 +35,7 @@
             name="name"
             id="name"
             placeholder="請輸入您的暱稱"
+            v-model="nikckname"
           />
           <label class="formControls_label" for="pwd">密碼</label>
           <input
@@ -42,6 +44,7 @@
             name="pwd"
             id="pwd"
             placeholder="請輸入密碼"
+            v-model="password"
             required
           />
           <label class="formControls_label" for="pwd">再次輸入密碼</label>
@@ -51,6 +54,7 @@
             name="pwd"
             id="pwd"
             placeholder="請再次輸入密碼"
+            v-model="confirmPassword"
             required
           />
           <input
@@ -66,4 +70,15 @@
   </div>
 </template>
 
-<script setup></script>
+<script setup>
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+
+// 表單資料
+const email = ref('test123@gamil.com')
+const nickname = ref('test')
+const password = ref('')
+const confirmPassword = ref('')
+</script>
