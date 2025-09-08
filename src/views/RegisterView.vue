@@ -35,7 +35,7 @@
             name="name"
             id="name"
             placeholder="請輸入您的暱稱"
-            v-model="nikckname"
+            v-model="nickname"
           />
           <label class="formControls_label" for="pwd">密碼</label>
           <input
@@ -60,10 +60,10 @@
           <input
             class="formControls_btnSubmit"
             type="button"
-            onclick="javascript:location.href='#todoListPage'"
+            @click="handleRegister"
             value="註冊帳號"
           />
-          <a class="formControls_btnLink" href="#loginPage">登入</a>
+          <router-link class="formControls_btnLink" to="/login">登入</router-link>
         </form>
       </div>
     </div>
@@ -71,6 +71,7 @@
 </template>
 
 <script setup>
+import { register } from '@/utils/api'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 
@@ -81,4 +82,14 @@ const email = ref('test123@gamil.com')
 const nickname = ref('test')
 const password = ref('')
 const confirmPassword = ref('')
+
+const handleRegister = async () => {
+  try {
+    await register(email.value, password.value, nickname.value)
+    alert('註冊成功')
+    router.push('/login')
+  } catch (error) {
+    alert(error.response.data.message)
+  }
+}
 </script>
