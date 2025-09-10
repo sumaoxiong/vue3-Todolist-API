@@ -5,6 +5,18 @@ const api = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
 })
 
+//Axios 攔截器(request)
+api.interceptors.request.use((config) => {
+  const token = document.cookie.replace(
+    /(?:(?:^|.*;\s*)vue3-todolist-token\s*=\s*([^;]*).*$)|^.*$/, //vue3-todolist-token 為 LoginView中設定的cookie
+    '$1',
+  )
+  if (token) {
+    config.headers.Authorization = token
+  }
+  return config
+})
+
 // 註冊
 export const register = async (email, password, nickname) => {
   return api.post('/users/sign_up', {
