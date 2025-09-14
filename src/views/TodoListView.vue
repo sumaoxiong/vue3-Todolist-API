@@ -17,13 +17,17 @@
         <p v-else>尚無待辦事項</p>
       </div>
     </div>
+    <!-- <input class="formControls_btnSubmit" type="button" @click="handlecheckout" value="登入驗證" />
+    <p>{{ checkoutmessage }}</p> -->
   </div>
 </template>
 
 <script setup>
 import TodoForm from '@/components/TodoForm.vue'
 import TodoList from '@/components/TodoList.vue'
+import { get_todos } from '@/utils/api'
 import { ref } from 'vue'
+import { checkout } from '@/utils/api'
 
 const todos = ref([
   { id: 1, content: '把冰箱發霉的檸檬拿去丟', status: false },
@@ -40,7 +44,40 @@ const addTodo = (content) => {
   }
 }
 
+//取得todo列表
+const getTodoDatas = async () => {
+  loadConfig.value.message = '代辦事項載入中…'
+  loadConfig.value.modelValue = true
+
+  try {
+    const res = await get_todos(token.value)
+    console.log(res)
+
+    if (!loginIn.value) {
+      loginIn.value = true
+    }
+
+    todoDatas.value = res.data.data
+  } catch (e) {
+    console.error(e)
+  } finally {
+    loadConfig.value.modelValue = false
+  }
+}
+
 const removeTodo = (id) => {
   todos.value = todos.value.filter((t) => t.id !== id)
+}
+
+//登入驗證
+const checkoutmessage = ref('')
+
+const handlecheckout = async () => {
+  try {
+    const response = await checkout()
+    checkoutmessage.value = response.data
+  } catch (error) {
+    checkoutmessage.value = '驗證失敗'
+  }
 }
 </script>

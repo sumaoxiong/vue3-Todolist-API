@@ -27,16 +27,16 @@ const router = createRouter({
       name: 'register',
       component: RegisterView,
     },
-    {
+    /* {
       path: '/:pathMatch(.*)*',
       name: 'NotFound',
       component: NotFoundView,
-    },
+    }, */
   ],
 })
 
 //路由守衛
-router.beforeEach((to, from, next) => {
+/* router.beforeEach((to, from, next) => {
   const token = document.cookie.replace(
     /(?:(?:^|.*;\s*)vue3-todolist-token\s*=\s*([^;]*).*$)|^.*$/,
     '$1',
@@ -50,6 +50,6 @@ router.beforeEach((to, from, next) => {
   } else {
     next() // 通過驗證
   }
-})
+}) */
 
 export default router

@@ -40,6 +40,13 @@
           />
           <input class="formControls_btnSubmit" type="button" @click="handleLogin" value="登入" />
           <router-link class="formControls_btnLink" to="/register">註冊帳號</router-link>
+          <input
+            class="formControls_btnSubmit"
+            type="button"
+            @click="handlecheckout"
+            value="登入驗證"
+          />
+          <p>{{ checkoutmessage }}</p>
         </form>
       </div>
     </div>
@@ -64,7 +71,7 @@ const handleLogin = async () => {
     // 儲存 token
     document.cookie = `vue3-todolist-token=${token}; expires=${exp}`
     alert('登入成功')
-    router.push('/todolist')
+    //router.push('/todolist')//頁面轉跳
   } catch (error) {
     alert(error.response.data.message)
   }

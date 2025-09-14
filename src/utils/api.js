@@ -33,3 +33,26 @@ export const login = async (email, password) => {
     password,
   })
 }
+
+//使用者驗證
+
+export const checkout = async () => {
+  return api.get('/users/checkout')
+}
+
+// 登出
+
+export const logout = async () => {}
+
+// 取得代辦清單
+export const get_todos = async () => {
+  return api.get('/users/checkout', {})
+}
+
+// 新增待辦事項
+
+// 更新待辦事項
+
+// 刪除待辦事項
+
+// 切換待辦事項完成狀態
