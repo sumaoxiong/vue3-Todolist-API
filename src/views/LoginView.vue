@@ -40,13 +40,6 @@
           />
           <input class="formControls_btnSubmit" type="button" @click="handleLogin" value="登入" />
           <router-link class="formControls_btnLink" to="/register">註冊帳號</router-link>
-          <input
-            class="formControls_btnSubmit"
-            type="button"
-            @click="handlecheckout"
-            value="登入驗證"
-          />
-          <p>{{ checkoutmessage }}</p>
         </form>
       </div>
     </div>
