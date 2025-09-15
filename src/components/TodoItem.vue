@@ -5,7 +5,7 @@
       <input class="todoList_input" type="checkbox" value="true" v-model="todo.status" />
       <span>{{ todo.content }}</span>
     </label>
-    <a href="#" @click="handleRemoveTodo(todo.id)">
+    <a href="#" @click.prevent="handleRemoveTodo(todo.id)">
       <i class="fa fa-times"></i>
     </a>
   </li>

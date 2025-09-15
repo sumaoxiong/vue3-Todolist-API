@@ -3,14 +3,17 @@
   <div class="todoList_list">
     <ul class="todoList_tab">
       <li>
-        <a href="#" @click="filterStatus = 'all'" :class="{ active: filterStatus === 'all' }"
+        <a
+          href="#"
+          @click.prevent="filterStatus = 'all'"
+          :class="{ active: filterStatus === 'all' }"
           >全部</a
         >
       </li>
       <li>
         <a
           href="#"
-          @click="filterStatus = 'incomplete'"
+          @click.prevent="filterStatus = 'incomplete'"
           :class="{ active: filterStatus === 'incomplete' }"
           >待完成</a
         >
@@ -18,7 +21,7 @@
       <li>
         <a
           href="#"
-          @click="filterStatus = 'complete'"
+          @click.prevent="filterStatus = 'complete'"
           :class="{ active: filterStatus === 'complete' }"
           >已完成</a
         >

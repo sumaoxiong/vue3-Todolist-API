@@ -2,7 +2,7 @@
 <template>
   <div class="inputBox">
     <input type="text" placeholder="請輸入待辦事項" v-model="newTodo" />
-    <a href="#" @click="handleAddTodo">
+    <a href="#" @click.prevent="handleAddTodo">
       <i class="fa fa-plus"></i>
     </a>
   </div>

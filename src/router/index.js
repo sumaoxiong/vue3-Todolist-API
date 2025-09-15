@@ -2,7 +2,7 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 import TodoListView from '@/views/TodoListView.vue'
 import LoginView from '@/views/LoginView.vue'
 import RegisterView from '@/views/RegisterView.vue'
-import NotFoundView from '@/views/NotFoundView.vue'
+//import NotFoundView from '@/views/NotFoundView.vue'
 
 const router = createRouter({
   history: createWebHashHistory(),

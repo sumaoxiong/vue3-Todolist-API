@@ -64,7 +64,7 @@ const handleLogin = async () => {
     // 儲存 token
     document.cookie = `vue3-todolist-token=${token}; expires=${exp}`
     alert('登入成功')
-    //router.push('/todolist')//頁面轉跳
+    router.push('/todolist') //頁面轉跳
   } catch (error) {
     alert(error.response.data.message)
   }

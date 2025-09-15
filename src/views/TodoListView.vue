@@ -5,9 +5,11 @@
       <h1><a href="#">ONLINE TODO LIST</a></h1>
       <ul>
         <li class="todo_sm">
-          <a href="#"><span>王小明的代辦</span></a>
+          <a href="#"
+            ><span>{{ checkoutmessage }}的代辦</span></a
+          >
         </li>
-        <li><a href="#loginPage">登出</a></li>
+        <li><a href="#" @click.prevent="signout">登出</a></li>
       </ul>
     </nav>
     <div class="conatiner todoListPage vhContainer">
@@ -17,56 +19,76 @@
         <p v-else>尚無待辦事項</p>
       </div>
     </div>
-    <!-- <input class="formControls_btnSubmit" type="button" @click="handlecheckout" value="登入驗證" />
-    <p>{{ checkoutmessage }}</p> -->
+    <input class="formControls_btnSubmit" type="button" @click="handlecheckout" value="登入驗證" />
   </div>
 </template>
 
 <script setup>
 import TodoForm from '@/components/TodoForm.vue'
 import TodoList from '@/components/TodoList.vue'
-import { get_todos } from '@/utils/api'
-import { ref } from 'vue'
-import { checkout } from '@/utils/api'
+import { get_todos, post_todos, delete_todos, checkout, logout } from '@/utils/api'
+import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 
-const todos = ref([
+//靜態測試
+/* const todos = ref([
   { id: 1, content: '把冰箱發霉的檸檬拿去丟', status: false },
   { id: 2, content: '打電話叫媽媽匯款給我', status: true },
-])
+]) */
 
-const addTodo = (content) => {
-  if (content.trim() !== '') {
-    todos.value.push({
-      id: Date.now(),
-      content,
-      status: false,
-    })
-  }
-}
+const router = useRouter()
 
-//取得todo列表
-const getTodoDatas = async () => {
-  loadConfig.value.message = '代辦事項載入中…'
-  loadConfig.value.modelValue = true
+const todos = ref([])
+const loading = ref(false)
 
+//取得todos
+const fetchTodos = async () => {
+  loading.value = true
   try {
-    const res = await get_todos(token.value)
-    console.log(res)
-
-    if (!loginIn.value) {
-      loginIn.value = true
-    }
-
-    todoDatas.value = res.data.data
-  } catch (e) {
-    console.error(e)
+    const ok = await handlecheckout() // 登入驗證，並取的用戶名稱
+    const res = await get_todos()
+    // 依你的後端回傳格式調整
+    // 假設 res.data = { data: [ { id, content, status }, ... ] }
+    todos.value = res.data.data
+  } catch (err) {
+    console.error('取得待辦失敗：', err)
   } finally {
-    loadConfig.value.modelValue = false
+    loading.value = false
   }
 }
 
-const removeTodo = (id) => {
-  todos.value = todos.value.filter((t) => t.id !== id)
+onMounted(fetchTodos)
+
+//新增todo
+const addTodo = async (content) => {
+  const text = content.trim()
+  if (!text) return
+  try {
+    await post_todos({ content: text, status: false })
+    await fetchTodos()
+  } catch (err) {
+    console.error('新增待辦失敗：', err)
+  }
+}
+
+//項目移除
+const removeTodo = async (id) => {
+  try {
+    await delete_todos(id)
+    todos.value = todos.value.filter((t) => t.id !== id)
+  } catch (err) {
+    console.error('刪除待辦失敗：', err)
+  }
+}
+
+//登出
+const signout = async () => {
+  try {
+    await logout()
+    router.push('/login')
+  } catch (error) {
+    alert(error.response.data.message)
+  }
 }
 
 //登入驗證
@@ -75,7 +97,7 @@ const checkoutmessage = ref('')
 const handlecheckout = async () => {
   try {
     const response = await checkout()
-    checkoutmessage.value = response.data
+    checkoutmessage.value = response.data.nickname
   } catch (error) {
     checkoutmessage.value = '驗證失敗'
   }
