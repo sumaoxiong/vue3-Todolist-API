@@ -15,7 +15,13 @@
     <div class="conatiner todoListPage vhContainer">
       <div class="todoList_Content">
         <TodoForm @add-todo="addTodo"></TodoForm>
-        <TodoList v-if="todos.length" :todos="todos" @remove-todo="removeTodo"></TodoList>
+        <TodoList
+          v-if="todos.length"
+          :todos="todos"
+          @remove-todo="removeTodo"
+          @toggle-todo="toggleTodo"
+          @update-todo="updateTodo"
+        ></TodoList>
         <p v-else>尚無待辦事項</p>
       </div>
     </div>
@@ -26,7 +32,15 @@
 <script setup>
 import TodoForm from '@/components/TodoForm.vue'
 import TodoList from '@/components/TodoList.vue'
-import { get_todos, post_todos, delete_todos, checkout, logout } from '@/utils/api'
+import {
+  get_todos,
+  post_todos,
+  delete_todos,
+  checkout,
+  logout,
+  put_todos,
+  toggle_todos,
+} from '@/utils/api'
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 
@@ -45,8 +59,8 @@ const loading = ref(false)
 const fetchTodos = async () => {
   loading.value = true
   try {
-    const ok = await handlecheckout() // 登入驗證，並取的用戶名稱
-    const res = await get_todos()
+    const ok = await handlecheckout() // 登入驗證，並取得用戶名稱
+    const res = await get_todos() //抓取用戶的todolist資料
     // 依你的後端回傳格式調整
     // 假設 res.data = { data: [ { id, content, status }, ... ] }
     todos.value = res.data.data
@@ -78,6 +92,38 @@ const removeTodo = async (id) => {
     todos.value = todos.value.filter((t) => t.id !== id)
   } catch (err) {
     console.error('刪除待辦失敗：', err)
+  }
+}
+
+//狀態更新
+const toggleTodo = async (id) => {
+  const idx = todos.value.findIndex((t) => t.id === id)
+  if (idx === -1) return
+  const prev = todos.value[idx].status
+  // 樂觀更新
+  todos.value[idx].status = !prev
+  try {
+    await toggle_todos(id)
+  } catch (err) {
+    // 失敗回滾
+    todos.value[idx].status = prev
+    console.error('切換狀態失敗：', err)
+  }
+}
+
+//項目編輯
+const updateTodo = async ({ id, content }) => {
+  const idx = todos.value.findIndex((t) => t.id === id)
+  if (idx === -1) return
+  const prev = todos.value[idx].content
+  // 樂觀更新
+  todos.value[idx].content = content
+  try {
+    // 視後端需求，只送 content（或一起送 status）
+    await put_todos(id, { content })
+  } catch (err) {
+    todos.value[idx].content = prev
+    console.error('更新待辦失敗：', err)
   }
 }
 

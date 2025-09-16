@@ -34,6 +34,8 @@
           :key="todo.id"
           :todo="todo"
           @remove-todo="emit('remove-todo', $event)"
+          @toggle-todo="emit('toggle-todo', $event)"
+          @update-todo="emit('update-todo', $event)"
         ></TodoItem>
       </ul>
       <div class="todoList_statistics">
@@ -53,7 +55,7 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['remove-todo'])
+const emit = defineEmits(['remove-todo', 'toggle-todo', 'update-todo'])
 
 const filterStatus = ref('all')
 const filterTodos = computed(() => {
