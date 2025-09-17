@@ -47,26 +47,28 @@
 </template>
 
 <script setup>
-import { login } from '@/utils/api'
+import { login } from '@/utils/api' // 引入登入 API
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 
-const router = useRouter()
+const router = useRouter() // 建立 router 物件，後續可以進行頁面導向
 
-// 表單資料
-const email = ref('test123@gamil.com') //請將資料清空
-const password = ref('')
+// --- 表單資料 (響應式變數) ---
+// 使用者在登入表單輸入的資料
+const email = ref('') // 信箱
+const password = ref('') // 密碼
 
+// --- Methods ---
+// 處理登入流程
 const handleLogin = async () => {
   try {
-    const response = await login(email.value, password.value)
-    const { token, exp } = response.data
-    // 儲存 token
-    document.cookie = `vue3-todolist-token=${token}; expires=${exp}`
-    alert('登入成功')
-    router.push('/todolist') //頁面轉跳
+    const response = await login(email.value, password.value) // 呼叫登入 API，傳入 email 與 password
+    const { token, exp } = response.data // 從回應中解構出 token 與 exp (token 過期時間)
+    document.cookie = `vue3-todolist-token=${token}; expires=${exp}` // 將 token 存到 cookie，並設定過期時間
+    alert('登入成功') // 登入成功提示
+    router.push('/todolist') // 導向待辦清單頁面
   } catch (error) {
-    alert(error.response.data.message)
+    alert(error.response.data.message) // 若登入失敗 (帳號或密碼錯誤等)，顯示錯誤訊息
   }
 }
 </script>

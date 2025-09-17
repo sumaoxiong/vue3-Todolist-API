@@ -45,9 +45,12 @@
   </div>
 </template>
 <script setup>
-import TodoItem from './TodoItem.vue'
+import TodoItem from './TodoItem.vue' // 引入 TodoItem 元件 (用來顯示單筆待辦事項)
 import { computed, ref } from 'vue'
 
+// --- Props ---
+// 接收從父元件傳入的 todos 陣列
+// todos: [{ id, content, status }, ...]
 const props = defineProps({
   todos: {
     type: Array,
@@ -55,19 +58,30 @@ const props = defineProps({
   },
 })
 
+// --- Emits ---
+// 定義可向父元件觸發的事件
+// remove-todo -> 刪除待辦事項
+// toggle-todo -> 切換完成/未完成狀態
+// update-todo -> 更新待辦事項內容
 const emit = defineEmits(['remove-todo', 'toggle-todo', 'update-todo'])
 
+// --- State 狀態管理 ---
+// filterStatus 紀錄目前的篩選條件 (all, complete, incomplete)
 const filterStatus = ref('all')
+
+// --- Computed 計算屬性 ---
+// 根據 filterStatus 決定要顯示哪些待辦事項
 const filterTodos = computed(() => {
   switch (filterStatus.value) {
-    case 'incomplete':
+    case 'incomplete': // 篩選「未完成」的待辦事項
       return props.todos.filter((t) => !t.status)
-    case 'complete':
+    case 'complete': // 篩選「已完成」的待辦事項
       return props.todos.filter((t) => t.status)
-    default:
+    default: // all -> 顯示全部
       return props.todos
   }
 })
 
+// 計算所有「未完成」的待辦事項，用來顯示剩餘數量
 const incompleteTodos = computed(() => props.todos.filter((t) => !t.status))
 </script>

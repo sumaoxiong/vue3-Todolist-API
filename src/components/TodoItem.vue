@@ -35,6 +35,8 @@
 <script setup>
 import { ref, watch } from 'vue'
 
+// --- Props ---
+// 接收從父元件傳入的 todo 物件 (包含 id, content, status 等資料)
 const props = defineProps({
   todo: {
     type: Object,
@@ -42,11 +44,20 @@ const props = defineProps({
   },
 })
 
+// --- Emits ---
+// 定義可向父元件觸發的事件
+// remove-todo   -> 刪除待辦事項
+// toggle-todo   -> 切換完成/未完成狀態
+// update-todo   -> 更新待辦事項內容
 const emit = defineEmits(['remove-todo', 'toggle-todo', 'update-todo'])
 
-const isEditing = ref(false)
-const draft = ref(props.todo.content)
+// --- State 狀態管理 ---
+const isEditing = ref(false) // 是否進入編輯模式
+const draft = ref(props.todo.content) // 暫存編輯中的文字內容 (不直接修改 props)
 
+// --- Watch ---
+// 監聽 props.todo.content 的變化
+// 當父層更新 todo 時 (例如 API 回傳最新資料)，若目前不是編輯模式，就同步更新 draft
 watch(
   () => props.todo.content,
   (v) => {
@@ -54,15 +65,19 @@ watch(
   },
 )
 
+// --- Methods ---
+// 切換完成狀態 (勾選 checkbox 時觸發)
 const onToggle = () => {
   emit('toggle-todo', props.todo.id)
 }
 
+// 進入編輯模式 (點擊編輯 icon 時觸發)
 const startEdit = () => {
   isEditing.value = true
   draft.value = props.todo.content
 }
 
+// 確認編輯 (按 Enter 或點擊儲存 icon 時觸發)
 const confirmEdit = () => {
   const next = draft.value.trim()
   isEditing.value = false
@@ -74,11 +89,13 @@ const confirmEdit = () => {
   }
 }
 
+// 取消編輯 (按 Esc 或離開輸入框時觸發)
 const cancelEdit = () => {
   isEditing.value = false
   draft.value = props.todo.content
 }
 
+// 刪除待辦事項
 const handleRemoveTodo = (id) => {
   emit('remove-todo', id)
 }
